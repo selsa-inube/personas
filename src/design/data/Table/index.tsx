@@ -8,7 +8,7 @@ import { IAction, IBreakpoint, IEntry, ITitle } from "./types";
 interface TableProps {
   id: string;
   titles: ITitle[];
-  actions: IAction[];
+  actions?: IAction[];
   entries: IEntry[];
   filter?: string;
   pageLength?: number;
@@ -91,6 +91,8 @@ const Table = (props: TableProps) => {
     }
   }
 
+  const withActions = !!actions;
+
   return (
     <StyledTableContainer id={id}>
       <TableUI
@@ -98,13 +100,14 @@ const Table = (props: TableProps) => {
         titles={titles}
         actions={actions}
         entries={getPageEntries()}
-        breakpoints={breakpoints!}
-        modalTitle={modalTitle!}
-        infoTitle={infoTitle!}
-        actionsTitle={actionsTitle!}
+        breakpoints={breakpoints}
+        modalTitle={modalTitle}
+        infoTitle={infoTitle}
+        actionsTitle={actionsTitle}
         hideMobileResume={hideMobileResume}
         mobileResumeTitle={mobileResumeTitle}
         colsSameWidth={colsSameWidth}
+        withActions={withActions}
       />
       {filteredEntries.length > pageLength && (
         <Pagination

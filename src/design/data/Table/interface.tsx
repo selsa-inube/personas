@@ -28,10 +28,12 @@ function priorityColumns(titles: ITitle[], numColumns: number) {
 
 function totalTitleColumns(
   titles: ITitle[],
-  breakpoints: IBreakpoint[],
-  media: Record<string, boolean>
+  breakpoints?: IBreakpoint[],
+  media?: Record<string, boolean>
 ) {
-  const numColumns = breakpoints[findCurrentMediaQuery(media)].totalColumns;
+  const numColumns = breakpoints
+    ? breakpoints[findCurrentMediaQuery(media ? media : {})].totalColumns
+    : titles.length;
 
   if (numColumns >= titles.length) return titles;
 
@@ -69,10 +71,10 @@ function renderActions(
   actions: IAction[],
   entry: IEntry,
   mediaQuery: boolean,
-  modalTitle: string,
-  titleLabels: ITitle[],
-  infoTitle: string,
-  actionsTitle: string,
+  modalTitle?: string,
+  titleLabels?: ITitle[],
+  infoTitle?: string,
+  actionsTitle?: string,
   hideMobileResume?: boolean
 ) {
   const actionsList =
@@ -85,10 +87,10 @@ function renderActions(
       <DisplayEntry
         portalId={portalId}
         entry={entry}
-        title={modalTitle}
+        title={modalTitle ||""}
         actions={actions}
-        titleLabels={titleLabels}
-        infoTitle={infoTitle}
+        titleLabels={titleLabels || []}
+        infoTitle={infoTitle ||""}
         actionsTitle={actionsTitle}
       />
     </StyledTd>
@@ -104,15 +106,16 @@ function renderActions(
 interface TableUIProps {
   portalId: string;
   titles: ITitle[];
-  actions: IAction[];
+  actions?: IAction[];
   entries: IEntry[];
-  breakpoints: IBreakpoint[];
-  modalTitle: string;
-  infoTitle: string;
-  actionsTitle: string;
+  breakpoints?: IBreakpoint[];
+  modalTitle?: string;
+  infoTitle?: string;
+  actionsTitle?: string;
   hideMobileResume?: boolean;
   mobileResumeTitle?: string;
   colsSameWidth?: boolean;
+  withActions: boolean;
 }
 
 const TableUI = (props: TableUIProps) => {
@@ -128,44 +131,46 @@ const TableUI = (props: TableUIProps) => {
     hideMobileResume,
     mobileResumeTitle,
     colsSameWidth,
+    withActions,
   } = props;
 
   const isTablet = useMediaQuery("(max-width: 850px)");
 
-  const queriesArray = useMemo(
+  const queriesArray = breakpoints && useMemo(
     () => breakpoints.map((breakpoint) => breakpoint.breakpoint),
     [breakpoints]
   );
+  const media = useMediaQueries(queriesArray || []);
 
-  const media = useMediaQueries(queriesArray);
-
-  const TitleColumns = useMemo(
-    () => totalTitleColumns(titles, breakpoints, media),
-    [titles, breakpoints, media]
-  );
+  const titleColumns = useMemo(
+        () => totalTitleColumns(titles, breakpoints, media),
+        [titles, breakpoints, media]
+      )
 
   return (
     <StyledTable colsSameWidth={colsSameWidth}>
       <StyledThead>
         <StyledTr>
-          {TitleColumns.map((title) => (
+          {titleColumns.map((title) => (
             <StyledThTitle
               key={`title-${title.id}`}
               aria-label={title.titleName}
-              countColumns={TitleColumns.length}
+              countColumns={titleColumns.length}
               colsSameWidth={colsSameWidth}
+              withActions={withActions}
             >
               <Text type="label" size="medium" appearance="dark">
                 {title.titleName}
               </Text>
             </StyledThTitle>
           ))}
-          {renderActionsTitles(
-            actions,
-            isTablet,
-            mobileResumeTitle,
-            hideMobileResume
-          )}
+          {actions &&
+            renderActionsTitles(
+              actions,
+              isTablet,
+              mobileResumeTitle,
+              hideMobileResume
+            )}
         </StyledTr>
       </StyledThead>
       <StyledTbody>
@@ -176,29 +181,30 @@ const TableUI = (props: TableUIProps) => {
               aria-labelledby={`entry-${entry.id}`}
               isLastTr={index === entries.length - 1}
             >
-              {TitleColumns.map((title) => (
-                <StyledTd key={`e-${title.id}`}>
+              {titleColumns.map((title) => (
+                <StyledTd key={`e-${title.id}`} withActions={withActions}>
                   <Text type="body" size="small" appearance="dark" ellipsis>
                     {entry[title.id]}
                   </Text>
                 </StyledTd>
               ))}
-              {renderActions(
-                portalId,
-                actions,
-                entry,
-                isTablet,
-                modalTitle,
-                titles,
-                infoTitle,
-                actionsTitle,
-                hideMobileResume
-              )}
+              {actions &&
+                renderActions(
+                  portalId,
+                  actions,
+                  entry,
+                  isTablet,
+                  modalTitle,
+                  titles,
+                  infoTitle,
+                  actionsTitle,
+                  hideMobileResume
+                )}
             </StyledTr>
           ))
         ) : (
           <StyledTr aria-labelledby={`no-data`} isLastTr>
-            <StyledTd colSpan={TitleColumns.length + 1}>
+            <StyledTd colSpan={titleColumns.length + 1}>
               <Text type="body" size="small" appearance="dark" ellipsis>
                 No se encontró información
               </Text>

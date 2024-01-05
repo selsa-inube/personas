@@ -15,4 +15,11 @@ const capitalizeText = (text: string) => {
   return text.charAt(0).toUpperCase() + text.slice(1);
 };
 
-export { capitalizeText, truncateAndObfuscateDescription };
+const removeLastCharacters = (
+  wordOfCell: string,
+  numberCharactersRemove: number
+): number => {
+  return Number(wordOfCell.slice(0, -numberCharactersRemove));
+};
+
+export { capitalizeText, truncateAndObfuscateDescription, removeLastCharacters };
