@@ -8,6 +8,7 @@ import { initalValuesCDAT } from "./config/initialValues";
 import { IInvestmentEntry } from "./forms/InvestmentForm/types";
 import { IFormsCdatRequest, IFormsCdatRequestRefs } from "./types";
 import { IInvestmentNameEntry } from "./forms/InvestmentNameForm/types";
+import { IRefundEntry } from "./forms/RefundForm/types";
 import { CdatRequestUI } from "./interface";
 
 function CdatRequest() {
@@ -23,6 +24,10 @@ function CdatRequest() {
       isValid: false,
       values: initalValuesCDAT.investment,
     },
+    refund: {
+      isValid: false,
+      values: initalValuesCDAT.refund,
+    },
     investmentName: {
       isValid: false,
       values: initalValuesCDAT.investmentName,
@@ -34,11 +39,13 @@ function CdatRequest() {
   });
 
   const investmentRef = useRef<FormikProps<IInvestmentEntry>>(null);
+  const refundRef = useRef<FormikProps<IRefundEntry>>(null);
   const investmentNameRef = useRef<FormikProps<IInvestmentNameEntry>>(null);
   const contactChannelsRef = useRef<FormikProps<IContactChannelsEntry>>(null);
 
   const formReferences: IFormsCdatRequestRefs = {
     investment: investmentRef,
+    refund: refundRef,
     investmentName: investmentNameRef,
     contactChannels: contactChannelsRef,
   };
