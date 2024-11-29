@@ -8,7 +8,7 @@ import {
 } from "react-icons/md";
 
 const logoUrl =
-  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbrWOwST-34PyX9rqlHzqEjqunO1PcMzpHJVUIV-7lL4HJ7tcEeNHaj6Redj1lFAOr4Q&usqp=CAU";
+  "https://res.cloudinary.com/wfercanas/image/upload/v1729119253/linpar/selsa_jybzim.png";
 
 const getHeader = (
   updateDataAssistedFlag: boolean,

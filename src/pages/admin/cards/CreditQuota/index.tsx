@@ -207,7 +207,7 @@ function CreditQuota() {
       title: `Extracto-cupo-crédito-${user.identification}`,
       subject: "Informe",
       author: `${user.firstName} ${user.firstLastName}`,
-      creator: "Fondecom",
+      creator: "Sistemas En Línea",
       keywords: "PDF/A",
     });
 
